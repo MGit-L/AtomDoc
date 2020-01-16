@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding='gb2312'?>
+<module name="qcb">
+  <public>
+	<component remote="true" singleton="true"  tx="CMT">
+	  <interface>nc.itf.qcb.IQcbTaskReportService</interface>
+	  <implementation>nc.impl.qcb.QcbTaskReportServiceImpl</implementation>
+	</component>
+  </public> 
+</module> 
