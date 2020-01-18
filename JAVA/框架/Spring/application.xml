@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans ----整个配置文件的根节点，包含一个或多个bean元素
+	xmlns="http://www.springframework.org/schema/beans" ----最基本的命名空间定义
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ----最基本的命名空间定义
+	xmlns:context="http://www.springframework.org/schema/context" ----启用自动扫描或注解装配时的命名空间
+	xmlns:aop="http://www.springframework.org/schema/aop" ----启用AOP功能时的命名空间
+	xmlns:tx="http://www.springframework.org/schema/tx" ----启用声明事务时的命名空间
+	xsi:schemaLocation="http://www.springframework.org/schema/beans ----与上述命名空间定义相配套的schema定义文件的装载路径
+						http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+						http://www.springframework.org/schema/context
+						http://www.springframework.org/schema/context/spring-context-2.5.xsd
+						http://www.springframework.org/schema/aop
+						http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+						http://www.springframework.org/schema/tx
+						http://www.springframework.org/schema/tx/spring-tx-2.5.xsd"
+	>
+	<context:annotation-config/> ----开启注解处理器
+	<context:component-scan base-package=""/> ----开启组件自动扫描，扫描路径由base-package属性指定
+	<aop:aspectj-autoproxy/> ----开启基于@AspectJ切面的注解处理器
+	<bean id="" class=""/> ----使用class属性指定类的默认构造方法创建一个单实例Bean，名称由id属性指定
+	<bean id="" class="" scope="prototype"/> ----scope属性为prototype时表示每次将生成新的实例，即原型模式
+	<bean id="" class="" init-method="" destroy-method=""/> ----init-method属性用于指定对象实例化后要调用的初始化方法；destroy-method属性用于指定对象在销毁时要调用的方法
+	<bean id="Bean实例名称" class="Bean类全名">
+		<property name="Bean类中的属性名称" ref="要引用的Bean名称"/> ----property标签用于对Bean实例中的属性进行赋值，ref表示对其他Bean实例的引用
+		<property name="Bean类中的属性名称" value="直接指定属性值"/> ----对于基本数据类型的值可由value属性直接指定
+		<property name="Bean类中的属性名称">
+			<bean class=""/> ----创建一个内部匿名Bean实例赋值给指定的属性，该匿名Bean实例无法被外界访问
+		</property>
+		<property name="Bean类中的Set类型属性名称">
+			<set> ----set标签用于创建一个Set类型的实例赋值给指定的Set类型属性，Set实例中的元素通过value或ref子标签指定。
+				<value>set中的元素</value>
+				<ref bean="要引用的Bean名称"/>
+			</set>
+		</property>
+		<property name="Bean类中的list类型属性名称">
+			<list> ----list标签用于创建一个list类型的实例赋值给指定的list类型属性
+				<value>list中的元素</value>
+				<ref bean="要引用的Bean名称"/>
+			</list>
+		</property>
+		<property name="Bean类型中的Map类型属性名称">
+			<map> ----map标签用于创建一个Map类型的实例赋值给指定的Map类型属性
+				<entry key="map元素的key"> ----Map实例中的元素通过entry子标签指定
+					<value>map元素的value</value> ----基本数据类型的元素由value标签生成
+				</entry> ----Map元素的键由entry标签key属性直接指定
+				<entry key="map元素的key">
+					<ref bean="要引用的Bean名称"/> ----需要引用其他Bean实例的话，可以由ref标签指定
+				</entry>
+			</map>
+		</property>
+		<property name="Bean类中的Properties类型属性名称">
+			<props> ----创建一个Properties类型的实例赋值给指定的Properties类型属性
+				<prop key="properties元素的key"> ----Properties实例中的属性项元素由prop标签生成，属性项元素的键由key属性指定，属性项元素的值可直接放置在prop标签体中
+					properties元素的value
+				</prop>
+			</props>
+		</property>
+		<property name="Bean类中要初始化为null的属性名称">
+			<null/> ----null标签用于给需要赋null值的属性进行赋null值
+		</property>
+	</bean>
+	<bean id="" class="">
+	----通过传入相应的构造参数进行bean实例化，constructor-arg标签用于指定一个构造参数，其index属性标明当前是第几个构造参数（从0开始）
+	----type属性声明构造参数的类型，构造参数的值如果是基本数据类型可由value属性直接指定，如果是对象的引用，则由ref属性指定
+		<constructor-arg index="从0开始的序号" type="构造参数的类型" value="构造参数的值"/>
+		<constructor-arg index="从0开始的序号" type="构造参数的类型" ref="要引用的Bean名称"/>
+	</bean>
+	<bean id="目标对象名称" class="目标对象类全名"/>
+	<bean id="切面实例名称" class="切面类全名"/>
+	<aop:config>
+		<aop:aspect id="切面ID" ref="要引用的切面实例名称"/>
+		<aop:pointcut expression="切入点正则表达式" id="切入点名称"/>
+		<aop:before pointcut-ref="切入点名称" method="切面类中用做前置通知的方法名"/>
+		<aop:after-returning pointcut-ref="切入点名称" method="切面类中用做后置通知的方法名"/>
+		<aop:after-throwing pointcut-ref="切入点名称" method="切面类中用做异常通知的方法名"/>
+		<aop:after pointcut-ref="切入点名称" method="切面类中用做最终通知的方法名"/>
+		<aop:around pointcut-ref="切入点名称" method="切面类中用做环绕通知的方法名"/>
+	</aop:config>
+	<bean id="transactionManager" class="事务管理器类全名"> ----配置事务管理器
+		<property name="数据源属性名称" ref="要引用的数据源实例名称"/>
+	</bean>
+	<tx:advice id="事务通知名称" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="get" read-only="true" propagation="NOT_SUPPORTED"/> ----方法以get开头的，不使用事务
+			<tx:method name="*"/> ----其他方法以默认事务进行
+		</tx:attributes>
+	</tx:advice>
+	<aop:config>
+		<aop:pointcut expression="事务切入点正则表达式" id="事务切入点名称"/>
+		<aop:advisor advice-ref="事务通知名称" pointcut-ref="事务切入点名称"/>
+	</aop:config>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</beans>
